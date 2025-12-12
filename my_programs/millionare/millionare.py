@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import csv
+import random
 
 path = r"my_programs\millionare\millionare_questions.csv"
 
@@ -45,8 +46,35 @@ def show_question_count_graph():
     plt.show()
 
 
+def resolve_question(diff = "easy"):
+    rand_int = random.randint(0, 261)
+
+    i = 0
+
+
+    with open(path, "r", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        
+        for line in reader:
+            if(i == rand_int):
+                print(line["question"])
+                player_input = input(": ")
+
+                if(str(line["correct_answer"]) == player_input):
+                    print("correct answer")
+                else:
+                    print("false answer")
+                
+                break
+            i += 1
+
+
+#===============================================================
+#game loop
 
 
 show_question_count_graph()
-
+#easy questions
+for i in range(5):
+    resolve_question()
 
