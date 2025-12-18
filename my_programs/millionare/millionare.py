@@ -1,9 +1,9 @@
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import csv
 import random
+import sys
 
-
-#========================global constants=======================
+#========================global variable and constants=======================
 path = r"my_programs/millionare/questions.csv"
 
 
@@ -23,7 +23,7 @@ history_questions = []
 
 
 score = 0
-lost = False
+round = 1
 
 #====================Fill Lists====================================
 
@@ -61,18 +61,22 @@ with open(path, "r", encoding="utf-8") as file:
 #====================Functions================================
 
 
-#def show_question_count_graph():
-    #plt.bar(["easy", "medium", "hard"], [len(easy_questions),len(medium_questions), len(hard_questions)],  color="blue")
-    #plt.title("QUESTIONS")
-    #plt.xlabel("type")
-    #plt.ylabel("n")
-    #plt.show()
+def show_question_count_graph():
+    plt.bar(["easy", "medium", "hard"], [len(easy_questions),len(medium_questions), len(hard_questions)],  color="blue")
+    plt.title("QUESTIONS")
+    plt.xlabel("type")
+    plt.ylabel("n")
+    plt.show()
 
 
 def resolve_question(diff = "easy"): 
     #this function chooses a random question and checks input
     #player input must be TRUE or FALSE, in CAPS
-    
+
+    #global [variable] is added to tell the function it is working with a global variable and not a local one
+    global round
+    global score
+
     i = random.choice(easy_questions) if diff == "easy" else random.choice(medium_questions) if diff == "medium" else random.choice(hard_questions)
 
     with open(path, "r", encoding="utf-8") as file:
@@ -81,13 +85,17 @@ def resolve_question(diff = "easy"):
         for line in reader:
             if(i == line["id"]):
                 print(line["question"])
-                player_input = input(": ")
+                player_input = input("> ")
 
                 if(str(line["correct_answer"]) == player_input):
                     print("correct")
+                    round += 1
+                    score += round ** 2 * 5
                 else:
                     print("wrong")
-                    lost = True
+                    print("score: ", score)
+                    print("round: ", round)
+                    sys.exit(1)
                     exit
                 break
 
@@ -95,14 +103,21 @@ def resolve_question(diff = "easy"):
 #=====================Game Loop=================================
 
 
+print("1 - sign up ¤ 2 - sign in")
+input("> ")
 
-#show_question_count_graph()
+print("1 - show graph ¤ 2 - play")
 
-#easy questions
-for i in range(5):
-    resolve_question("easy")
-for i in range(5):
-    resolve_question("medium")
-for i in range(5):
-    resolve_question("hard")
+if(str(input("> ")) == "1"):
+    show_question_count_graph()
+else:
+    #easy questions
+    for i in range(5):
+        resolve_question("easy")
+    #medium questions
+    for i in range(5):
+        resolve_question("medium")
+    #hard questions
+    for i in range(5):
+        resolve_question("hard")
 
