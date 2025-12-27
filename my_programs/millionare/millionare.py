@@ -1,11 +1,11 @@
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import csv
 import random
 import sys
 
 #========================global variable and constants=======================
 path = r"my_programs/millionare/questions.csv"
-
+users_path = r"my_programs/millionare/users.csv"
 
 easy_questions = []
 medium_questions = []
@@ -24,6 +24,8 @@ history_questions = []
 
 score = 0
 round = 1
+
+signed_in_user_username = ""
 
 #====================Fill Lists====================================
 
@@ -61,12 +63,12 @@ with open(path, "r", encoding="utf-8") as file:
 #====================Functions================================
 
 
-def show_question_count_graph():
-    plt.bar(["easy", "medium", "hard"], [len(easy_questions),len(medium_questions), len(hard_questions)],  color="blue")
-    plt.title("QUESTIONS")
-    plt.xlabel("type")
-    plt.ylabel("n")
-    plt.show()
+#def show_question_count_graph():
+#    plt.bar(["easy", "medium", "hard"], [len(easy_questions),len(medium_questions), len(hard_questions)],  color="blue")
+#    plt.title("QUESTIONS")
+#    plt.xlabel("type")
+#    plt.ylabel("n")
+#    plt.show()
 
 
 def resolve_question(diff = "easy"): 
@@ -95,6 +97,8 @@ def resolve_question(diff = "easy"):
                     print("wrong")
                     print("score: ", score)
                     print("round: ", round)
+
+                    input("press enter to exit")
                     sys.exit(1)
                     exit
                 break
@@ -104,12 +108,23 @@ def resolve_question(diff = "easy"):
 
 
 print("1 - sign up ¤ 2 - sign in")
-input("> ")
+if(str(input("> ")) == "1"):
+    with open(users_path, "a", encoding="utf-8") as file:
+        file.write("0" + str(input("username: ")) + "," + str(input("password: ")) + ",0\n")
+else:
+    with open(users_path, "r", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        for line in reader:
+            if(str(line["username"]) == str(input("username: ")) and str(line["password"]) == str(input("password: "))):
+                print("welcome back ", line["username"])
+                signed_in_user_username = line["username"]
+                break
 
 print("1 - show graph ¤ 2 - play")
 
 if(str(input("> ")) == "1"):
-    show_question_count_graph()
+    #show_question_count_graph()
+    print()
 else:
     #easy questions
     for i in range(5):
