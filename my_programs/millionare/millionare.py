@@ -7,6 +7,8 @@ import sys
 path = r"my_programs/millionare/questions.csv"
 users_path = r"my_programs/millionare/users.csv"
 
+users_data = dict()
+
 easy_questions = []
 medium_questions = []
 hard_questions = []
@@ -62,7 +64,7 @@ with open(path, "r", encoding="utf-8") as file:
 
 #====================Functions================================
 
-
+#! Remove '#' to enable graph showing function
 #def show_question_count_graph():
 #    plt.bar(["easy", "medium", "hard"], [len(easy_questions),len(medium_questions), len(hard_questions)],  color="blue")
 #    plt.title("QUESTIONS")
@@ -78,6 +80,7 @@ def resolve_question(diff = "easy"):
     #global [variable] is added to tell the function it is working with a global variable and not a local one
     global round
     global score
+    global users_data
 
     i = random.choice(easy_questions) if diff == "easy" else random.choice(medium_questions) if diff == "medium" else random.choice(hard_questions)
 
@@ -97,6 +100,18 @@ def resolve_question(diff = "easy"):
                     print("wrong")
                     print("score: ", score)
                     print("round: ", round)
+                    
+                    #update user score in users.csv
+                    for user_line in users_data:
+                        if(user_line["username"] == signed_in_user_username):
+                            user_line["score"] = str(score)
+                            break
+                    
+                    with open(users_path, "w", encoding="utf-8", newline='') as file:
+                        fieldnames = ["id", "username", "password", "score"]
+                        writer = csv.DictWriter(file, fieldnames = fieldnames)
+                        writer.writeheader()
+                        writer.writerows(users_data)
 
                     input("press enter to exit")
                     sys.exit(1)
@@ -106,19 +121,31 @@ def resolve_question(diff = "easy"):
 
 #=====================Game Loop=================================
 
+#initial read to fill users_file_reader
+with open(users_path, "r", encoding="utf-8") as file:
+    reader = csv.DictReader(file)
+    users_data = [row for row in reader]
+print(users_data)
+#=====================Sign up / Sign in==========================
+
 
 print("1 - sign up ¤ 2 - sign in")
+
+
 if(str(input("> ")) == "1"):
     with open(users_path, "a", encoding="utf-8") as file:
-        file.write("0" + str(input("username: ")) + "," + str(input("password: ")) + ",0\n")
+        file.write("0," + str(input("username: ")) + "," + str(input("password: ")) + ",0\n")
 else:
     with open(users_path, "r", encoding="utf-8") as file:
         reader = csv.DictReader(file)
+
         for line in reader:
             if(str(line["username"]) == str(input("username: ")) and str(line["password"]) == str(input("password: "))):
                 print("welcome back ", line["username"])
                 signed_in_user_username = line["username"]
                 break
+            else:
+                print("wrong username or password")
 
 print("1 - show graph ¤ 2 - play")
 
