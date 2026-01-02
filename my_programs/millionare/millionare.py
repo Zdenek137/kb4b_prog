@@ -1,4 +1,4 @@
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import csv
 import random
 import sys
@@ -64,13 +64,12 @@ with open(path, "r", encoding="utf-8") as file:
 
 #====================Functions================================
 
-#! Remove '#' to enable graph showing function
-#def show_question_count_graph():
-#    plt.bar(["easy", "medium", "hard"], [len(easy_questions),len(medium_questions), len(hard_questions)],  color="blue")
-#    plt.title("QUESTIONS")
-#    plt.xlabel("type")
-#    plt.ylabel("n")
-#    plt.show()
+def show_question_count_graph():
+    plt.bar(["easy", "medium", "hard"], [len(easy_questions),len(medium_questions), len(hard_questions)],  color="blue")
+    plt.title("QUESTIONS")
+    plt.xlabel("type")
+    plt.ylabel("n")
+    plt.show()
 
 
 def resolve_question(diff = "easy"): 
@@ -101,14 +100,15 @@ def resolve_question(diff = "easy"):
                     print("score: ", score)
                     print("round: ", round)
                     
-                    #update user score in users.csv
+                    #update user highest_score in users.csv
                     for user_line in users_data:
                         if(user_line["username"] == signed_in_user_username):
-                            user_line["score"] = str(score)
+                            if(int(user_line["highest_score"]) <= int(score)):
+                                user_line["highest_score"] = str(score)
                             break
                     
                     with open(users_path, "w", encoding="utf-8", newline='') as file:
-                        fieldnames = ["id", "username", "password", "score"]
+                        fieldnames = ["id", "username", "password", "highest_score"]
                         writer = csv.DictWriter(file, fieldnames = fieldnames)
                         writer.writeheader()
                         writer.writerows(users_data)
@@ -125,9 +125,7 @@ def resolve_question(diff = "easy"):
 with open(users_path, "r", encoding="utf-8") as file:
     reader = csv.DictReader(file)
     users_data = [row for row in reader]
-print(users_data)
-#=====================Sign up / Sign in==========================
-
+#========Sign up / Sign in========
 
 print("1 - sign up ¤ 2 - sign in")
 
@@ -147,10 +145,11 @@ else:
             else:
                 print("wrong username or password")
 
+#========Show graph / Play========
 print("1 - show graph ¤ 2 - play")
 
 if(str(input("> ")) == "1"):
-    #show_question_count_graph()
+    show_question_count_graph()
     print()
 else:
     #easy questions
