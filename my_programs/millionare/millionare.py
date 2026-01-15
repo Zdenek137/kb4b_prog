@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import csv
 import random
 import sys
@@ -64,12 +64,13 @@ with open(path, "r", encoding="utf-8") as file:
 
 #====================Functions================================
 
-def show_question_count_graph():
-    plt.bar(["easy", "medium", "hard"], [len(easy_questions),len(medium_questions), len(hard_questions)],  color="blue")
-    plt.title("QUESTIONS")
-    plt.xlabel("type")
-    plt.ylabel("n")
-    plt.show()
+#! Remove '#' to enable graph showing function
+#def show_question_count_graph():
+#    plt.bar(["easy", "medium", "hard"], [len(easy_questions),len(medium_questions), len(hard_questions)],  color="blue")
+#    plt.title("QUESTIONS")
+#    plt.xlabel("type")
+#    plt.ylabel("amount")
+#    plt.show()
 
 
 def resolve_question(diff = "easy"): 
@@ -98,6 +99,7 @@ def resolve_question(diff = "easy"):
                 else:
                     print("wrong")
                     print("score: ", score)
+                    print("highest score: ", [user_line["highest_score"] for user_line in users_data if user_line["username"] == signed_in_user_username][0])
                     print("round: ", round)
                     
                     #update user highest_score in users.csv
@@ -125,9 +127,11 @@ def resolve_question(diff = "easy"):
 with open(users_path, "r", encoding="utf-8") as file:
     reader = csv.DictReader(file)
     users_data = [row for row in reader]
+
 #========Sign up / Sign in========
 
-print("1 - sign up ¤ 2 - sign in")
+print("1 - sign up")
+print("2 - sign in")
 
 
 if(str(input("> ")) == "1"):
@@ -144,12 +148,15 @@ else:
                 break
             else:
                 print("wrong username or password")
+                break
 
 #========Show graph / Play========
-print("1 - show graph ¤ 2 - play")
+print("1 - show graph")
+print("2 - play")
 
 if(str(input("> ")) == "1"):
-    show_question_count_graph()
+    #! remove '#' to enable graph showing function
+    #show_question_count_graph()
     print()
 else:
     #easy questions
@@ -161,4 +168,5 @@ else:
     #hard questions
     for i in range(5):
         resolve_question("hard")
+    print("Congratulations! You win!")
 
