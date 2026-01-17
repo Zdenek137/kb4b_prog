@@ -2,6 +2,7 @@
 import csv
 import random
 import sys
+import os
 
 #========================global variable and constants=======================
 path = r"my_programs/millionare/questions.csv"
@@ -71,7 +72,8 @@ with open(path, "r", encoding="utf-8") as file:
 #    plt.xlabel("type")
 #    plt.ylabel("amount")
 #    plt.show()
-
+def clear_terminal():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def resolve_question(diff = "easy"): 
     #this function chooses a random question and checks input
@@ -90,17 +92,17 @@ def resolve_question(diff = "easy"):
         for line in reader:
             if(i == line["id"]):
                 print(line["question"])
-                player_input = input("> ")
+                player_input = input("You answer > ")
 
                 if(str(line["correct_answer"]) == player_input):
-                    print("correct")
+                    print("Correct")
                     round += 1
                     score += round ** 2 * 5
                 else:
-                    print("wrong")
-                    print("score: ", score)
-                    print("highest score: ", [user_line["highest_score"] for user_line in users_data if user_line["username"] == signed_in_user_username][0])
-                    print("round: ", round)
+                    print("Wrong")
+                    print("Score: ", score)
+                    print("Highest score: ", [user_line["highest_score"] for user_line in users_data if user_line["username"] == signed_in_user_username][0])
+                    print("Round: ", round)
                     
                     #update user highest_score in users.csv
                     for user_line in users_data:
@@ -115,7 +117,7 @@ def resolve_question(diff = "easy"):
                         writer.writeheader()
                         writer.writerows(users_data)
 
-                    input("press enter to exit")
+                    input("Press enter to exit")
                     sys.exit(1)
                     exit
                 break
@@ -136,29 +138,37 @@ print("2 - sign in")
 
 if(str(input("> ")) == "1"):
     with open(users_path, "a", encoding="utf-8") as file:
-        file.write("0," + str(input("username: ")) + "," + str(input("password: ")) + ",0\n")
+        file.write("0," + str(input("Username: ")) + "," + str(input("Password: ")) + ",0\n")
 else:
-    with open(users_path, "r", encoding="utf-8") as file:
-        reader = csv.DictReader(file)
-
-        for line in reader:
-            if(str(line["username"]) == str(input("username: ")) and str(line["password"]) == str(input("password: "))):
-                print("welcome back ", line["username"])
-                signed_in_user_username = line["username"]
-                break
-            else:
-                print("wrong username or password")
-                break
+    logging_in = True
+    while(logging_in):
+        clear_terminal()
+        with open(users_path, "r", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
+            for line in reader:
+                if(str(line["username"]) == str(input("Username: ")) and str(line["password"]) == str(input("Password: "))):
+                    print("Welcome back ", line["username"])
+                    signed_in_user_username = line["username"]
+                    logging_in = False
+                    break
+                else:
+                    print("Wrong username or password")
+                    break
+        input("")
 
 #========Show graph / Play========
+clear_terminal()
+print("MENU")
 print("1 - show graph")
 print("2 - play")
 
 if(str(input("> ")) == "1"):
+    clear_terminal()
     #! remove '#' to enable graph showing function
     #show_question_count_graph()
     print()
 else:
+    clear_terminal()
     #easy questions
     for i in range(5):
         resolve_question("easy")
@@ -169,4 +179,7 @@ else:
     for i in range(5):
         resolve_question("hard")
     print("Congratulations! You win!")
+    print("Score: ", score)
+    print("Highest score: ", [user_line["highest_score"] for user_line in users_data if user_line["username"] == signed_in_user_username][0])
+    print("Round: ", round)
 
