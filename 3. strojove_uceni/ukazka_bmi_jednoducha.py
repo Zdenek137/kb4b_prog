@@ -4,6 +4,7 @@
 import csv
 
 from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
 # ---------- Načtení CSV a úprava dat ----------
@@ -31,11 +32,7 @@ with open("3. strojove_uceni/data/bmi.csv", "r", encoding="utf-8") as file:
 rows = len(X)
 split = round(0.8 * rows)
 
-trening_X = X[:split]
-trening_Y = Y[:split]
-
-test_X = X[split:]
-test_Y = Y[split:]
+trening_X, test_X, trening_Y, test_Y = train_test_split(X, Y, test_size=0.2, random_state=40)
 
 # ---------- Neuronová síť ----------
 neural_network = MLPClassifier(
