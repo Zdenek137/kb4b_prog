@@ -41,7 +41,7 @@ trening_X, test_X, trening_Y, test_Y = train_test_split(X, Y, test_size=0.2, ran
 
 # ---------- Neuronová síť ----------
 neural_network = MLPClassifier(
-    hidden_layer_sizes=(8, 4),
+    hidden_layer_sizes=(64, 64, 8),
     activation="relu",
     max_iter=2000,
     random_state=4
@@ -60,6 +60,6 @@ for i in range(len(results)):
         correct += 1
 print(correct / len(results))
 
-print(test_Y)
-print(results)
+#print(test_Y)
+#print(results)
 print(confusion_matrix(test_Y, results))
